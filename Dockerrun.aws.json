@@ -1,0 +1,46 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "volumes": [
+    {
+      "name": "efs",
+      "host": {
+        "sourcePath": "/mnt/efs"
+      }
+    }
+  ],
+  "containerDefinitions": [
+    {
+      "name": "api",
+      "image": "939102736904.dkr.ecr.eu-west-1.amazonaws.com/inskop_api:latest",
+      "essential": true,
+      "memory": 1536,
+      "mountPoints": [
+        {
+          "sourceVolume": "efs",
+          "containerPath": "/usr/src/app/media"
+        }
+      ]
+    },
+    {
+      "name": "nginx",
+      "image": "939102736904.dkr.ecr.eu-west-1.amazonaws.com/inskop_api_nginx:latest",
+      "essential": true,
+      "memory": 128,
+      "mountPoints": [
+        {
+          "sourceVolume": "efs",
+          "containerPath": "/usr/src/media"
+        }
+      ],
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80
+        }
+      ],
+      "links": [
+        "api"
+      ]
+    }
+  ]
+}

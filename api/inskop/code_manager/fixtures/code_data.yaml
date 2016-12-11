@@ -1,0 +1,48 @@
+- model: code_manager.CodeCategory
+  pk: 1
+  fields:
+    name: orig
+- model: code_manager.CodeCategory
+  pk: 2
+  fields:
+    name: video filter
+- model: code_manager.CodeCategory
+  pk: 3
+  fields:
+    name: windower
+- model: code_manager.CodeCategory
+  pk: 4
+  fields:
+    name: featurer
+- model: code_manager.CodeCategory
+  pk: 5
+  fields:
+    name: scorer
+- model: code_manager.CodeCategory
+  pk: 6
+  fields:
+    name: trainer
+- model: code_manager.CodeCategory
+  pk: 7
+  fields:
+    name: classifier
+- model: code_manager.CodeCategory
+  pk: 8
+  fields:
+    name: tracker
+- model: code_manager.Code
+  pk: 1
+  fields:
+    name: orig
+    slug: orig
+    owner: 1
+    category: 1
+    file:
+    created_at: 2016-03-16T17:41:28+00:00
+    updated_at: 2016-03-16T17:41:28+00:00
+- model: code_manager.Process
+  pk: 1
+  fields:
+    owner: 1
+    name: orig
+    slug: orig

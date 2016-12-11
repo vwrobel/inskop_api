@@ -1,0 +1,62 @@
+---
+- model: scene_manager.tagtarget
+  pk: 1
+  fields:
+    name: selection
+- model: scene_manager.tagcategory
+  pk: 1
+  fields:
+    name: main
+    target: 1
+- model: scene_manager.scenestatus
+  pk: 1
+  fields:
+    name: question
+- model: scene_manager.scenestatus
+  pk: 2
+  fields:
+    name: normal
+- model: scene_manager.scenestatus
+  pk: 3
+  fields:
+    name: temp
+- model: scene_manager.scene
+  pk: 1
+  fields:
+    name: aouta
+    slug: aouta
+    owner: 1
+    subtitle: ''
+    description: The little red beast
+    date:
+    location: ''
+    created_at: '2016-11-07T23:09:50.529Z'
+    updated_at: '2016-11-20T13:52:15.919Z'
+    locked: false
+    active: true
+    valid: true
+    status: 2
+    tags: []
+- model: scene_manager.camera
+  pk: 1
+  fields:
+    number: 1
+    description:
+    scene: 1
+- model: scene_manager.video
+  pk: 1
+  fields:
+    name: orig
+    slug: orig
+    camera: 1
+    process: 1
+    file: scenes/aouta/cam1/orig.mp4
+    analysis:
+- model: scene_manager.windowType
+  pk: 1
+  fields:
+    name: manual
+- model: scene_manager.windowType
+  pk: 2
+  fields:
+    name: computed

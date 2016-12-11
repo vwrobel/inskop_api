@@ -1,0 +1,89 @@
+---
+- model: auth.user
+  pk: 1
+  fields:
+    password: pbkdf2_sha256$30000$eNS6YeID4dNH$xdJ8PSwWHqKUxS1E4IYP8ur++ZjmCmY1axztdG9AiKY=
+    last_login: '2016-12-02T15:01:53.348Z'
+    is_superuser: true
+    username: vwrobel
+    first_name: ''
+    last_name: ''
+    email: ''
+    is_staff: true
+    is_active: true
+    date_joined: '2016-12-01T17:16:51.481Z'
+    groups: []
+    user_permissions: []
+- model: auth.user
+  pk: 2
+  fields:
+    password: pbkdf2_sha256$30000$6z9gdfftyD6E$PEa0aex/H7ZiOZIEhst4QHeQDbVvcxrp355tWYRpwDY=
+    last_login:
+    is_superuser: false
+    username: temp_user
+    first_name: ''
+    last_name: ''
+    email: ''
+    is_staff: false
+    is_active: true
+    date_joined: '2016-12-01T17:16:52.425Z'
+    groups: []
+    user_permissions: []
+- model: auth.user
+  pk: 3
+  fields:
+    password: pbkdf2_sha256$30000$6z9gdfftyD6E$PEa0aex/H7ZiOZIEhst4QHeQDbVvcxrp355tWYRpwDY=
+    last_login:
+    is_superuser: false
+    username: michel
+    first_name: ''
+    last_name: ''
+    email: ''
+    is_staff: false
+    is_active: true
+    date_joined: '2016-12-01T17:16:52.425Z'
+    groups: []
+    user_permissions: []
+- model: auth.user
+  pk: 4
+  fields:
+    password: pbkdf2_sha256$30000$6z9gdfftyD6E$PEa0aex/H7ZiOZIEhst4QHeQDbVvcxrp355tWYRpwDY=
+    last_login:
+    is_superuser: false
+    username: monique
+    first_name: ''
+    last_name: ''
+    email: ''
+    is_staff: false
+    is_active: true
+    date_joined: '2016-12-01T17:16:52.425Z'
+    groups: []
+    user_permissions: []
+- model: account_manager.Auth0User
+  pk: 1
+  fields:
+    user: 1
+    name: valerian.wrobel1
+    slug: valerianwrobel1
+    auth0_id: auth0|579c7db15baeed6d29ed1705
+- model: account_manager.Auth0User
+  pk: 2
+  fields:
+    user: 2
+    name: temp_user
+    slug: temp_user
+    auth0_id: temp_user
+- model: account_manager.Auth0User
+  pk: 3
+  fields:
+    user: 3
+    name: michel
+    slug: michel
+    auth0_id: michel_auth0id
+- model: account_manager.Auth0User
+  pk: 4
+  fields:
+    user: 4
+    name: monique
+    slug: monique
+    auth0_id: monique_auth0id

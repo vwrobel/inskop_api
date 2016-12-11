@@ -1,0 +1,57 @@
+conda create -n inskop_env python=3
+
+
+#posgresql db setup
+
+python manage.py migrate
+python manage.py createsuperuser
+-> create temp_user from admin
+
+
+
+#to dockerize
+
+docker run --env-file .env inskop_api
+
+
+#eb_cli
+
+eb init
+eb local run --envvars SECRET_KEY='_$=$%eqxk$8ss4n7mtgarw^5$8^d5+c83!vwatr@i_81myb=e4',DB_NAME='postgres',DB_USER='postgres',DB_PASS='postgres',DB_SERVICE='postgres',DB_PORT='5432',AUTH0_KEY='xKkjgMcEnYzq2aly6yihfBwQIifZMAhaUPM0Y_m3FAfu7mQ-e2t6_-cFIyDVpSyq'
+
+
+# local docker
+docker build -t inskop_api ./inskop_api
+docker run --env-file ./inskop_api/.env inskop_api
+docker tag inskop_api:latest 782246339304.dkr.ecr.eu-west-1.amazonaws.com/inskop_api:latest
+docker ps
+docker exec -t -i <container name> bash
+python manage.py migrate
+
+
+# connect to served app
+
+eb ssh
+sudo docker ps
+sudo docker exec -t -i <container name> bash
+
+
+
+python manage.py shell < inskop/cvtools_to_codes.py
+
+
+scp -i key_pair_vw.pem somefile.txt root@my.ec2.id.amazonaws.com:/
+
+>>> import cv2
+>>> img = cv2.imread('media/scenes/aouta/cam1/thumbnail.jpg',0)
+
+cap = cv2.VideoCapture('media/scenes/aouta/cam1/orig.mp4')
+_, frame = cap.read()
+ffmpeg -i media/scenes/aouta/cam1/orig.mp4 2>&1 | egrep "Seems|Input|Duration:|Stream"
+
+>>> from inskop.scene_manager.models import Scene
+>>> aouta = Scene.objects.get(pk=1)
+>>> cap = aouta.orig_cap
+
+
+avconv -i color_select.avi -c:v libx264 -c:a copy color_select.mp4

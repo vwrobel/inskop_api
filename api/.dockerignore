@@ -1,0 +1,8 @@
+venv
+media
+media_example
+Dockerfile
+docker-compose.yml
+db.sqlite3
+.env
+cvtools/example

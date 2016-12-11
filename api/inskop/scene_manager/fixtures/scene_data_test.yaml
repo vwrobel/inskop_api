@@ -1,0 +1,111 @@
+---
+- model: scene_manager.tagtarget
+  pk: 1
+  fields:
+    name: selection
+- model: scene_manager.tagcategory
+  pk: 1
+  fields:
+    name: main
+    target: 1
+- model: scene_manager.scenestatus
+  pk: 1
+  fields:
+    name: question
+- model: scene_manager.scenestatus
+  pk: 2
+  fields:
+    name: normal
+- model: scene_manager.scenestatus
+  pk: 3
+  fields:
+    name: temp
+- model: scene_manager.scene
+  pk: 1
+  fields:
+    name: michel_scene
+    slug: michel_scene
+    owner: 3
+    subtitle: ''
+    description: michel scene description
+    date:
+    location: ''
+    created_at: '2016-11-07T23:09:50.529Z'
+    updated_at: '2016-11-20T13:52:15.919Z'
+    locked: false
+    active: true
+    valid: true
+    status: 2
+    tags: []
+- model: scene_manager.scene
+  pk: 2
+  fields:
+    name: monique_scene
+    slug: monique_scene
+    owner: 4
+    subtitle: ''
+    description: monique scene description
+    date:
+    location: ''
+    created_at: '2016-11-07T23:09:50.529Z'
+    updated_at: '2016-11-20T13:52:15.919Z'
+    locked: false
+    active: true
+    valid: true
+    status: 2
+    tags: []
+- model: scene_manager.camera
+  pk: 1
+  fields:
+    number: 1
+    description:
+    scene: 1
+- model: scene_manager.camera
+  pk: 2
+  fields:
+    number: 1
+    description:
+    scene: 2
+- model: scene_manager.video
+  pk: 1
+  fields:
+    name: orig
+    slug: orig
+    camera: 1
+    process: 1
+    file:
+    analysis:
+- model: scene_manager.video
+  pk: 2
+  fields:
+    name: orig
+    slug: orig
+    camera: 2
+    process: 1
+    file:
+    analysis:
+- model: scene_manager.favoriteScene
+  pk: 1
+  fields:
+    scene: 1
+    user: 4
+- model: scene_manager.favoriteScene
+  pk: 2
+  fields:
+    scene: 2
+    user: 4
+- model: scene_manager.tagTarget
+  pk: 1
+  fields:
+    name: selection
+- model: scene_manager.tagCategory
+  pk: 1
+  fields:
+    name: main
+    target: 1
+- model: scene_manager.tag
+  pk: 1
+  fields:
+    name: bird
+    category: 1
+    owner: 3
