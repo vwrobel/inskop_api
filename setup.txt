@@ -55,3 +55,8 @@ ffmpeg -i media/scenes/aouta/cam1/orig.mp4 2>&1 | egrep "Seems|Input|Duration:|S
 
 
 avconv -i color_select.avi -c:v libx264 -c:a copy color_select.mp4
+
+
+> to install cvtools in conda env
+source activate inskop
+pip install -e ~/Projets/inskop/code/cvtools/

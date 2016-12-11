@@ -5,15 +5,12 @@ import json
 import os.path
 
 import cv2
-import yaml
 from PIL import Image
 from autoslug import AutoSlugField
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from webcolors import hex_to_rgb
-
-import cvtools.cvtools as cvtools
 from ..account_manager.models import Auth0User
 from ..code_manager.models import Process
 from ..storage import OverwriteStorage
@@ -239,7 +236,7 @@ def video_path(instance, filename=''):
 class Video(models.Model):
     name = models.CharField(max_length=40)
     description = models.CharField(max_length=40, null=True, blank=True)
-    slug = AutoSlugField(populate_from='name', always_update=True, unique_with=('analysis', 'camera'))
+    slug = AutoSlugField(populate_from='name', always_update=True, unique_with=('camera'))
     camera = models.ForeignKey(Camera, on_delete=models.CASCADE)
     process = models.ForeignKey(Process, on_delete=models.CASCADE)
     file = models.FileField(upload_to=video_path, storage=OverwriteStorage(), null=True)
@@ -292,56 +289,6 @@ class Video(models.Model):
             details = [frame_count, fps, frame_width, frame_height]
             ret = [cap] + details
         return ret
-
-    def process_vid(self):
-        orig_vid = self.analysis.scene.orig_vid
-        orig_vid_path = orig_vid.get_path(with_mediaroot=True)
-        processed_vid_path = self.get_path(with_mediaroot=True).replace('.mp4', '.avi')
-        process_yaml = yaml.load(self.process.process)
-        if not os.path.isfile(processed_vid_path):
-            # Apply filters
-            filters_name = [item['filter']['name'] for item in process_yaml[0]['filters']]
-            filters_param = [item['filter']['param'] for item in process_yaml[0]['filters']]
-            if filters_name:
-                comp_process = cvtools.CompFilter(self.name + '_filters', filters_name, filters_param)
-                filtered_vid_path = processed_vid_path.replace('.avi', '_filtered.avi')
-                cvtools.main.apply_comp_process_to_video(orig_vid_path,
-                                                         filtered_vid_path,
-                                                         comp_process)
-                orig_vid_path = filtered_vid_path.replace('avi', 'mp4')
-
-            # Apply trackers
-            trackers_name = [item['tracker']['name'] for item in process_yaml[1]['trackers']]
-            trackers_param = [item['tracker']['param'] for item in process_yaml[1]['trackers']]
-            trackers_selection = [item['tracker']['selection'] for item in process_yaml[1]['trackers']]
-            if trackers_name:
-                selection_list = [Selection.objects.get(name=selection_name) for selection_name in trackers_selection]
-                window_list = [Window.objects.get(selection=selection, type__name='manual').selection_window for
-                                  selection in selection_list]
-                comp_process = cvtools.CompTracker(self.name + '_trackers', trackers_name, trackers_param, window_list)
-                tracked_vid_path = processed_vid_path.replace('.avi', '_tracked.avi')
-                computed_selection_list = cvtools.main.apply_comp_process_to_video(orig_vid_path,
-                                                                                   tracked_vid_path,
-                                                                                   comp_process)
-                for sindex, csl in enumerate(computed_selection_list):
-                    for cs in csl:
-                        selection = selection_list[sindex]
-                        item = Window.objects.get(selection=selection, type__name='manual').item
-                        item['x'] = round(cs.x, 3)
-                        item['y'] = round(cs.y, 3)
-                        item['width'] = round(cs.w, 3)
-                        item['height'] = round(cs.h, 3)
-                        Window.objects.create(
-                            selection=selection,
-                            camera=self.camera,
-                            t=cs.t,
-                            type=WindowType.objects.get(name='computed'),
-                            video=self,
-                            json_item=json.dumps(item)
-                        )
-                os.remove(filtered_vid_path.replace('avi', 'mp4'))
-                os.rename(tracked_vid_path.replace('avi', 'mp4'),
-                          processed_vid_path.replace('avi', 'mp4'))
 
 
 class SelectionType(models.Model):
@@ -425,15 +372,15 @@ class Window(models.Model):
         return [self.x, self.y, self.w, self.h]
 
     @property
-    def selection_window(self):
-        selection_window = cvtools.objects.SelectionWindow(
-            x=self.x,
-            y=self.y,
-            w=self.w,
-            h=self.h,
-            t=self.t,
-            color=self.color,
-            name=self.selection.name,
-            type=self.type.name
-        )
-        return selection_window
+    def selection_dict(self):
+        selection_dict = {
+            'x': self.x,
+            'y': self.y,
+            'w': self.w,
+            'h': self.h,
+            't': self.t,
+            'color': self.color,
+            'name': self.selection.name,
+            'type': self.type.name
+        }
+        return selection_dict

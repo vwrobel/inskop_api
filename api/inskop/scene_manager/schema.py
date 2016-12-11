@@ -10,7 +10,7 @@ from ..account_manager.models import Auth0User
 from ..code_manager.models import Process, Code
 from ..scene_manager.models import Scene, SceneStatus, Camera, Video, Window, Tag, TagCategory, \
     TagTarget, Selection, FavoriteScene, WindowType, Analysis, SelectionType, FavoriteAnalysis
-
+from ..scene_manager.services import process_vid
 
 class SceneNode(DjangoObjectType):
     class Meta:
@@ -337,7 +337,7 @@ class AddVideo(Mutation):
             os.remove(video.get_path(with_mediaroot=True))
         except OSError:
             pass
-        video.process_vid()
+        process_vid(video)
         return AddVideo(video=video, ok=bool(video.id))
 
 

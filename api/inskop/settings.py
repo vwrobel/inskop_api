@@ -31,7 +31,6 @@ DEBUG = True if os.getenv('DEBUG') == 'true' else False
 # Application definition
 
 
-
 if 'RDS_DB_NAME' in os.environ:
     DATABASES = {
         'default': {
@@ -160,13 +159,13 @@ def jwt_get_user_id_from_payload_handler(payload):
     return user_id
 
 JWT_PAYLOAD_GET_USER_ID_HANDLER = jwt_get_user_id_from_payload_handler
-AUTH0_KEY = os.environ['AUTH0_KEY']
+AUTH0_KEY = os.environ['AUTH0_CLIENT_SECRET']
 JWT_SECRET_KEY = base64.b64decode(AUTH0_KEY.replace("_", "/").replace("-", "+"))
 JWT_ALGORITHM = 'HS256'
 JWT_VERIFY = True
 JWT_VERIFY_EXPIRATION = False
 JWT_AUTH_HEADER_PREFIX = 'Bearer'
-JWT_AUDIENCE = 'T46FWnqLUhRQcQGpvvDP296JKtYbNTeO'
+JWT_AUDIENCE = os.environ['AUTH0_CLIENT_ID']
 
 AWS_HEADERS = {  # see http://developer.yahoo.com/performance/rules.html#expires
     'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',

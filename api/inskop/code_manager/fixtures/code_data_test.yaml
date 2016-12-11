@@ -34,38 +34,8 @@
   pk: 1
   fields:
     owner: 1
-    code: 1
-    param:
-- model: code_manager.Process
-  pk: 2
-  fields:
-    owner: 1
-    code: 2
-    param:
-      pyr_scale: 0.5
-      levels: 3
-      win_size: 15
-      iterations: 3
-      poly_n: 5
-      poly_sigma: 1.1
-- model: code_manager.Process
-  pk: 3
-  fields:
-    owner: 1
-    code: 3
-    param:
-      lower: [17, 15, 100]
-      upper: [50, 56, 200]
-- model: code_manager.Process
-  pk: 4
-  fields:
-    owner: 1
-    code: 4
-    param:
-      sigma_blur: 9
-      threshold: 5
-      kernel_size: 5
-      tau: 200
+    name: orig
+    slug: orig
 - model: code_manager.Code
   pk: 1
   fields:

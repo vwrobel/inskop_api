@@ -65,7 +65,7 @@
     user: 1
     name: valerian.wrobel1
     slug: valerianwrobel1
-    auth0_id: auth0|579c7db15baeed6d29ed1705
+    auth0_id: auth0|584cbbcec641b4f41364b259
 - model: account_manager.Auth0User
   pk: 2
   fields:
