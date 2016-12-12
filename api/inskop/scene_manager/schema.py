@@ -266,7 +266,7 @@ class Query(AbstractType):
 
     def resolve_all_videos_of_analysis(self, args, context, info):
         analysis_pk = from_global_id(args.get('analysis__id'))[1]
-        videos_of_analysis = Video.objects.filter(analysis__pk=analysis_pk)
+        videos_of_analysis = Video.objects.filter(analysis__pk=analysis_pk, active=True)
         return videos_of_analysis
 
     analysis = Node.Field(AnalysisNode)
@@ -339,6 +339,42 @@ class AddVideo(Mutation):
             pass
         process_vid(video)
         return AddVideo(video=video, ok=bool(video.id))
+
+
+class ChangeVideo(Mutation):
+    class Input:
+        video_id = ID(required=True)
+        process_yaml = String(required=True)
+
+    video = Field(VideoNode)
+    ok = Boolean()
+
+    def mutate(self, args, context, info):
+        video = Video.objects.get(pk=from_global_id(args.get('video_id'))[1])
+        process_yaml = args.get('process_yaml')
+        user = Auth0User.objects.get(user=context.user)
+        if video.analysis.owner == user:
+            process = video.process;
+            process.process = process_yaml
+            process.save()
+            process_vid(video)
+        return ChangeVideo(video=video, ok=bool(video.id))
+
+
+class DeleteVideo(Mutation):
+    class Input:
+        video_id = ID(required=True)
+
+    video = Field(VideoNode)
+    ok = Boolean()
+
+    def mutate(self, args, context, info):
+        video = Video.objects.get(pk=from_global_id(args.get('video_id'))[1])
+        user = Auth0User.objects.get(user=context.user)
+        if video.analysis.owner == user and video.slug is not 'orig':
+            video.active = False
+            video.save()
+        return DeleteVideo(video=video, ok=bool(video.id))
 
 
 class AddScene(Mutation):
@@ -644,3 +680,5 @@ class Mutation(AbstractType):
     clear_analysis = ClearAnalysis.Field()
     add_tag = AddTag.Field()
     add_video = AddVideo.Field()
+    delete_video = DeleteVideo.Field()
+    change_video = ChangeVideo.Field()

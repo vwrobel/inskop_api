@@ -241,6 +241,7 @@ class Video(models.Model):
     process = models.ForeignKey(Process, on_delete=models.CASCADE)
     file = models.FileField(upload_to=video_path, storage=OverwriteStorage(), null=True)
     analysis = models.ForeignKey(Analysis, on_delete=models.CASCADE, null=True, blank=True)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.slug
@@ -381,6 +382,7 @@ class Window(models.Model):
             't': self.t,
             'color': self.color,
             'name': self.selection.name,
-            'type': self.type.name
+            'type': self.type.name,
+            'added': True
         }
         return selection_dict
