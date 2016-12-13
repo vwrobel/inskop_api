@@ -1,0 +1,6 @@
+- model: other_manager.doc
+  pk: 1
+  fields:
+    title: Presentation
+    slug: presentation
+    file: docs/presentation/doc.pdf

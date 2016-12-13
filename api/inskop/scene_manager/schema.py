@@ -307,6 +307,7 @@ class AddVideo(Mutation):
 
     video = Field(VideoNode)
     ok = Boolean()
+    status_url = String()
 
     def mutate(self, args, context, info):
         analysis = Analysis.objects.get(pk=from_global_id(args.get('analysis_id'))[1])
@@ -337,8 +338,8 @@ class AddVideo(Mutation):
             os.remove(video.get_path(with_mediaroot=True))
         except OSError:
             pass
-        process_vid(video)
-        return AddVideo(video=video, ok=bool(video.id))
+        status_url = process_vid(video)
+        return AddVideo(video=video, status_url=status_url, ok=bool(video.id))
 
 
 class ChangeVideo(Mutation):
@@ -347,18 +348,20 @@ class ChangeVideo(Mutation):
         process_yaml = String(required=True)
 
     video = Field(VideoNode)
+    status_url = String()
     ok = Boolean()
 
     def mutate(self, args, context, info):
         video = Video.objects.get(pk=from_global_id(args.get('video_id'))[1])
         process_yaml = args.get('process_yaml')
         user = Auth0User.objects.get(user=context.user)
+        status_url = ''
         if video.analysis.owner == user:
             process = video.process;
             process.process = process_yaml
             process.save()
-            process_vid(video)
-        return ChangeVideo(video=video, ok=bool(video.id))
+            status_url = process_vid(video)
+        return ChangeVideo(video=video, status_url=status_url, ok=bool(video.id))
 
 
 class DeleteVideo(Mutation):

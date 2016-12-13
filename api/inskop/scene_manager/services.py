@@ -36,22 +36,23 @@ def process_vid(vid):
                'tracker_selections': json.dumps(window_list)}
 
     res = requests.post(cv_address + '/process', data=payload)
-    computed_selection_list = json.loads(json.loads(res.text)['computed_selection_list'])
+    return json.loads(res.text)['Location']
 
-    for sindex, csl in enumerate(computed_selection_list):
-        for cs in csl:
-            selection = selection_list[sindex]
-            item = Window.objects.get(selection=selection, type__name='manual').item
-            item['x'] = round(cs['x'], 3)
-            item['y'] = round(cs['y'], 3)
-            item['width'] = round(cs['w'], 3)
-            item['height'] = round(cs['h'], 3)
-            Window.objects.create(
-                selection=selection,
-                camera=vid.camera,
-                t=cs['t'],
-                type=WindowType.objects.get(name='computed'),
-                video=vid,
-                json_item=json.dumps(item)
-            )
-
+    # computed_selection_list = json.loads(json.loads(res.text)['computed_selection_list'])
+    #
+    # for sindex, csl in enumerate(computed_selection_list):
+    #     for cs in csl:
+    #         selection = selection_list[sindex]
+    #         item = Window.objects.get(selection=selection, type__name='manual').item
+    #         item['x'] = round(cs['x'], 3)
+    #         item['y'] = round(cs['y'], 3)
+    #         item['width'] = round(cs['w'], 3)
+    #         item['height'] = round(cs['h'], 3)
+    #         Window.objects.create(
+    #             selection=selection,
+    #             camera=vid.camera,
+    #             t=cs['t'],
+    #             type=WindowType.objects.get(name='computed'),
+    #             video=vid,
+    #             json_item=json.dumps(item)
+    #         )

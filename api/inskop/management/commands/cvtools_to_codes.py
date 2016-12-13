@@ -36,5 +36,6 @@ class Command(BaseCommand):
 
                     process_module = importlib.import_module('cvtools.processes.' + process_type + '.' + process_name)
                     code.default_param = process_module.PARAM_DEFAULT
+                    code.description = process_module.__doc__
                     code.save()
                     self.stdout.write(process_type + ' ' + process_name + ' created or updated')
