@@ -22,11 +22,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = os.environ.get('SECRET_KEY','')
 
 ALLOWED_HOSTS = ['*'] #TODO: Check this!
 
-DEBUG = True if os.getenv('DEBUG') == 'true' else False
+DEBUG = True if os.environ.get('DEBUG') == 'true' else False
 
 # Application definition
 
@@ -35,22 +35,22 @@ if 'RDS_DB_NAME' in os.environ:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.environ['RDS_DB_NAME'],
-            'USER': os.environ['RDS_USERNAME'],
-            'PASSWORD': os.environ['RDS_PASSWORD'],
-            'HOST': os.environ['RDS_HOSTNAME'],
-            'PORT': os.environ['RDS_PORT'],
+            'NAME': os.environ.get('RDS_DB_NAME',''),
+            'USER': os.environ.get('RDS_USERNAME',''),
+            'PASSWORD': os.environ.get('RDS_PASSWORD',''),
+            'HOST': os.environ.get('RDS_HOSTNAME',''),
+            'PORT': os.environ.get('RDS_PORT','')
         }
     }
 else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': os.environ['DB_NAME'],
-            'USER': os.environ['DB_USER'],
-            'PASSWORD': os.environ['DB_PASS'],
-            'HOST': os.environ['DB_SERVICE'],
-            'PORT': os.environ['DB_PORT']
+            'NAME': os.environ.get('DB_NAME',''),
+            'USER': os.environ.get('DB_USER',''),
+            'PASSWORD': os.environ.get('DB_PASS',''),
+            'HOST': os.environ.get('DB_SERVICE',''),
+            'PORT': os.environ.get('DB_PORT','')
         }
     }
 
@@ -68,6 +68,8 @@ INSTALLED_APPS = [
     'graphene_django',
     'rest_framework',
     'rest_framework_csv',
+    'channels',
+    'jobs',
 
     'inskop.account_manager',
     'inskop.file_transfer_manager',
@@ -159,23 +161,23 @@ def jwt_get_user_id_from_payload_handler(payload):
     return user_id
 
 JWT_PAYLOAD_GET_USER_ID_HANDLER = jwt_get_user_id_from_payload_handler
-AUTH0_KEY = os.environ['AUTH0_CLIENT_SECRET']
+AUTH0_KEY = os.environ.get('AUTH0_CLIENT_SECRET', '')
 JWT_SECRET_KEY = base64.b64decode(AUTH0_KEY.replace("_", "/").replace("-", "+"))
 JWT_ALGORITHM = 'HS256'
 JWT_VERIFY = True
 JWT_VERIFY_EXPIRATION = False
 JWT_AUTH_HEADER_PREFIX = 'Bearer'
-JWT_AUDIENCE = os.environ['AUTH0_CLIENT_ID']
+JWT_AUDIENCE = os.environ.get('AUTH0_CLIENT_ID', '')
 
 AWS_HEADERS = {  # see http://developer.yahoo.com/performance/rules.html#expires
     'Expires': 'Thu, 31 Dec 2099 20:00:00 GMT',
     'Cache-Control': 'max-age=94608000',
 }
 
-if os.getenv('S3_STORAGE') == 'true':
-    AWS_STORAGE_BUCKET_NAME = os.environ['AWS_STORAGE_BUCKET_NAME']
-    AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
-    AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+if os.environ.get('S3_STORAGE') == 'true':
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME','')
+    AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID','')
+    AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY','')
 
     # Tell django-storages that when coming up with the URL for an item in S3 storage, keep
     # it simple - just use this domain plus the path. (If this isn't set, things get complicated).
@@ -196,3 +198,22 @@ else:
 
 MEDIAFILES_LOCATION = 'media'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# Channels settings
+CHANNEL_LAYERS = {
+   "default": {
+       "BACKEND": "asgi_redis.RedisChannelLayer",  # use redis backend
+       "CONFIG": {
+           "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],  # set redis address
+       },
+       "ROUTING": "inskop.routing.channel_routing"  # load routing from our routing.py file
+   }
+}
+
+# Celery settings
+BROKER_URL = 'redis://localhost:6379/0'  # our redis address
+# use json format for everything
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

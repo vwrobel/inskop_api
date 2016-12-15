@@ -60,3 +60,31 @@ avconv -i color_select.avi -c:v libx264 -c:a copy color_select.mp4
 > to install cvtools in conda env
 source activate inskop
 pip install -e ~/Projets/inskop/code/cvtools/
+
+
+
+correct homebrew.pth if pb with PYTHONPATH
+
+Psycopg pb
+cd /usr/local/lib
+macbook-pro-de-vw-1:lib vwrobel$ sudo ln -sf /Applications/Postgres.app/Contents/Versions/9.6/lib/libcrypto.1.0.0.dylib libcrypto.1.0.0.dylib
+macbook-pro-de-vw-1:lib vwrobel$ sudo ln -sf /Applications/Postgres.app/Contents/Versions/9.6/lib/libssl.1.0.0.dylib libssl.1.0.0.dylib
+
+
+# launch celery worker
+SECRET_KEY='_$=$%eqxk$8ss4n7mtgarw^5$8^d5+c83!vwatr@i_81myb=e4' celery worker -A inskop.celery.app --loglevel=info
+
+
+brew install ffmpeg --with-fdk-aac --with-ffplay --with-freetype --with-libass --with-libquvi --with-libvorbis --with-libvpx --with-opus --with-x265
+brew install -v opencv3 --HEAD --with-ffmpeg --with-tbb --with-contrib --with-python3
+
+
+brew options ffmpeg (to find what you want to install)
+brew install ffmpeg --with-x --with-y --with-z etc.
+brew update && brew upgrade (Update formulae and Homebrew itself && Install newer versions of outdated packages)
+brew prune (Remove dead symlinks from Homebrew’s prefix)
+brew doctor (Check your Homebrew installation for common issues)
+
+
+#install cvtools in virtualenv
+pip install -e pathtocvtools

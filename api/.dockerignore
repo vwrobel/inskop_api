@@ -6,3 +6,4 @@ docker-compose.yml
 db.sqlite3
 .env
 cvtools/example
+redis-stable

@@ -10,7 +10,6 @@ from ..account_manager.models import Auth0User
 from ..code_manager.models import Process, Code
 from ..scene_manager.models import Scene, SceneStatus, Camera, Video, Window, Tag, TagCategory, \
     TagTarget, Selection, FavoriteScene, WindowType, Analysis, SelectionType, FavoriteAnalysis
-from ..scene_manager.services import process_vid
 
 class SceneNode(DjangoObjectType):
     class Meta:
@@ -307,7 +306,6 @@ class AddVideo(Mutation):
 
     video = Field(VideoNode)
     ok = Boolean()
-    status_url = String()
 
     def mutate(self, args, context, info):
         analysis = Analysis.objects.get(pk=from_global_id(args.get('analysis_id'))[1])
@@ -338,8 +336,7 @@ class AddVideo(Mutation):
             os.remove(video.get_path(with_mediaroot=True))
         except OSError:
             pass
-        status_url = process_vid(video)
-        return AddVideo(video=video, status_url=status_url, ok=bool(video.id))
+        return AddVideo(video=video, ok=bool(video.id))
 
 
 class ChangeVideo(Mutation):
@@ -362,6 +359,15 @@ class ChangeVideo(Mutation):
             process.save()
             status_url = process_vid(video)
         return ChangeVideo(video=video, status_url=status_url, ok=bool(video.id))
+
+
+class TestMut(Mutation):
+    class Input:
+        analysis_id = ID(required=True)
+    ok = Boolean()
+
+    def mutate(self, args, context, info):
+        return ChangeVideo(ok=True)
 
 
 class DeleteVideo(Mutation):
@@ -685,3 +691,4 @@ class Mutation(AbstractType):
     add_video = AddVideo.Field()
     delete_video = DeleteVideo.Field()
     change_video = ChangeVideo.Field()
+    test_mut = TestMut.Field()
