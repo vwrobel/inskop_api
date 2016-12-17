@@ -46,3 +46,29 @@
     owner: 1
     name: orig
     slug: orig
+- model: code_manager.process
+  pk: 2
+  fields:
+    name: color_select_and_camshift
+    slug: color_select_and_camshift
+    owner: 1
+    process: |-
+      # This is an example of compound process YAML spec
+      # Find filters and trackers in *codes*
+
+      filters:
+        - filter:
+            name: color_select
+            param:
+              lower: [17, 15, 100]
+              upper: [50, 56, 200]
+      trackers:
+        - tracker:
+            name: camshift
+            selection: Aouto
+            param:
+              lower_color_bound: [0.0, 0.0, 0.0]
+              upper_color_bound: [255.0, 255.0, 255.0]
+              color_channel: [2]
+              channel_range: [40, 120]
+              bin_nb: [48]

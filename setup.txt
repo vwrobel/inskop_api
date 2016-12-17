@@ -72,7 +72,7 @@ macbook-pro-de-vw-1:lib vwrobel$ sudo ln -sf /Applications/Postgres.app/Contents
 
 
 # launch celery worker
-SECRET_KEY='_$=$%eqxk$8ss4n7mtgarw^5$8^d5+c83!vwatr@i_81myb=e4' celery worker -A inskop.celery.app --loglevel=info
+celery worker -A inskop.celery.app --loglevel=info
 
 
 brew install ffmpeg --with-fdk-aac --with-ffplay --with-freetype --with-libass --with-libquvi --with-libvorbis --with-libvpx --with-opus --with-x265

@@ -27,7 +27,7 @@
     slug: aouta
     owner: 1
     subtitle: ''
-    description: The little red beast
+    description: An aouta running around
     date:
     location: ''
     created_at: '2016-11-07T23:09:50.529Z'
@@ -37,6 +37,19 @@
     valid: true
     status: 2
     tags: []
+- model: scene_manager.analysis
+  pk: 1
+  fields:
+    scene: 1
+    owner: 1
+    name: aouta_analysis
+    slug: aouta_analysis
+    description: "1/ Add a new analysis,\n2/ Select the aouta with the selection tool,\n3/
+      Tag 'aouta' and name 'Aouto' your selection,\n4/ Add a new video with the prefilled
+      example process,\n5/ Wait for your video to be processed,\n5/ Click on the table
+      tool and download the tracking data in csv. \n"
+    locked: false
+    active: true
 - model: scene_manager.camera
   pk: 1
   fields:
@@ -52,6 +65,17 @@
     process: 1
     file: scenes/aouta/cam1/orig.mp4
     analysis:
+- model: scene_manager.video
+  pk: 2
+  fields:
+    name: color_select_and_camshift
+    description:
+    slug: color_select_and_camshift
+    camera: 1
+    process: 2
+    file: scenes/aouta/cam1/analyses/valerianwrobel1/aouta_analysis/color_select_and_camshift.mp4
+    analysis: 1
+    active: true
 - model: scene_manager.windowType
   pk: 1
   fields:
@@ -60,3 +84,26 @@
   pk: 2
   fields:
     name: computed
+- model: scene_manager.tag
+  pk: 1
+  fields:
+    name: aouta
+    category: 1
+    owner: 1
+- model: scene_manager.selection
+  pk: 1
+  fields:
+    analysis: 1
+    name: Aouto
+    type:
+    tags:
+    - 1
+- model: scene_manager.window
+  pk: 1
+  fields:
+    selection: 1
+    camera: 1
+    t: 0
+    type: 1
+    video:
+    json_item: '{"itemId":"89328c4e-a930-473a-937b-2ae63a993702","x":0.7135922330097088,"y":0.7202072538860104,"width":0.06407766990291264,"height":0.2245250431778929,"stroke":"#ff4081","strokeWidth":3,"dash":null,"type":"manual","added":true}'

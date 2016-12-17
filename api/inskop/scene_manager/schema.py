@@ -345,29 +345,17 @@ class ChangeVideo(Mutation):
         process_yaml = String(required=True)
 
     video = Field(VideoNode)
-    status_url = String()
     ok = Boolean()
 
     def mutate(self, args, context, info):
         video = Video.objects.get(pk=from_global_id(args.get('video_id'))[1])
         process_yaml = args.get('process_yaml')
         user = Auth0User.objects.get(user=context.user)
-        status_url = ''
         if video.analysis.owner == user:
             process = video.process;
             process.process = process_yaml
             process.save()
-            status_url = process_vid(video)
-        return ChangeVideo(video=video, status_url=status_url, ok=bool(video.id))
-
-
-class TestMut(Mutation):
-    class Input:
-        analysis_id = ID(required=True)
-    ok = Boolean()
-
-    def mutate(self, args, context, info):
-        return ChangeVideo(ok=True)
+        return ChangeVideo(video=video, ok=bool(video.id))
 
 
 class DeleteVideo(Mutation):
@@ -391,6 +379,7 @@ class AddScene(Mutation):
         name = String(required=True)
         description = String(required=True)
         status = String(required=True)
+        locked = Boolean(required=True)
 
     scene = Field(SceneNode)
     ok = Boolean()
@@ -398,13 +387,15 @@ class AddScene(Mutation):
     def mutate(self, args, context, info):
         name = args.get('name')
         description = args.get('description')
+        locked = args.get('locked')
         status = SceneStatus.objects.get(name=args.get('status'))
         user = Auth0User.objects.get(user=context.user)
         scene = SceneNode._meta.model(
             name=name,
             description=description,
             owner=user,
-            status=status
+            status=status,
+            locked=locked
         )
         scene.save()
         scene.create_camera()
@@ -436,6 +427,7 @@ class ChangeScene(Mutation):
         name = String(required=False)
         description = String(required=False)
         status = String(required=False)
+        locked = Boolean(required=True)
 
     scene = Field(SceneNode)
     ok = Boolean()
@@ -444,12 +436,14 @@ class ChangeScene(Mutation):
         pk = from_global_id(args.get('scene_id'))[1]
         name = args.get('name')
         description = args.get('description')
+        locked = args.get('locked')
         status = SceneStatus.objects.get(name=args.get('status'))
         scene = Scene.objects.get(pk=pk)
         if description != 'undefined' and description != '':
             scene.description = description
         if status:
             scene.status = status
+        scene.locked = locked
         scene.save()
         return ChangeScene(scene=scene, ok=bool(scene.id))
 
@@ -691,4 +685,3 @@ class Mutation(AbstractType):
     add_video = AddVideo.Field()
     delete_video = DeleteVideo.Field()
     change_video = ChangeVideo.Field()
-    test_mut = TestMut.Field()
