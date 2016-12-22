@@ -1,6 +1,6 @@
 import sys
 from django.core.management.base import BaseCommand
-import cvtools.processes as processes
+from cvtools import processes
 import os.path, pkgutil
 from inskop.code_manager.models import Code, CodeCategory
 from inskop.account_manager.models import Auth0User
@@ -34,7 +34,7 @@ class Command(BaseCommand):
                     with open(read_me_path, 'r') as content_file:
                         code.read_me = content_file.read()
 
-                    process_module = importlib.import_module('cvtools.processes.' + process_type + '.' + process_name)
+                    process_module = importlib.import_module('cvtools.cvtools.processes.' + process_type + '.' + process_name)
                     code.default_param = process_module.PARAM_DEFAULT
                     code.description = process_module.__doc__
                     code.save()

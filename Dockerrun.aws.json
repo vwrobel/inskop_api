@@ -13,7 +13,29 @@
       "name": "api",
       "image": "939102736904.dkr.ecr.eu-west-1.amazonaws.com/inskop_api:latest",
       "essential": true,
-      "memory": 1536,
+      "memory": 600,
+
+      "command": ["python", "manage.py", "runserver", "--noworker"],
+      "mountPoints": [
+        {
+          "sourceVolume": "efs",
+          "containerPath": "/usr/src/app/media"
+        }
+      ]
+    },
+    {
+      "name": "daphneworker",
+      "image": "939102736904.dkr.ecr.eu-west-1.amazonaws.com/inskop_api:latest",
+      "essential": true,
+      "memory": 300,
+      "command": ["python", "manage.py", "runworker"]
+    },
+    {
+      "name": "celeryworker",
+      "image": "939102736904.dkr.ecr.eu-west-1.amazonaws.com/inskop_api:latest",
+      "essential": true,
+      "memory": 600,
+      "command": ["celery", "worker", "-A", "inskop.celery.app", "--loglevel=info"],
       "mountPoints": [
         {
           "sourceVolume": "efs",
@@ -25,7 +47,7 @@
       "name": "nginx",
       "image": "939102736904.dkr.ecr.eu-west-1.amazonaws.com/inskop_api_nginx:latest",
       "essential": true,
-      "memory": 128,
+      "memory": 300,
       "mountPoints": [
         {
           "sourceVolume": "efs",

@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
+import sys
 import base64
 import os
 
@@ -199,21 +200,46 @@ else:
 MEDIAFILES_LOCATION = 'media'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
+REDIS_HOSTNAME = os.environ.get('REDIS_HOSTNAME', '')
 # Channels settings
 CHANNEL_LAYERS = {
    "default": {
        "BACKEND": "asgi_redis.RedisChannelLayer",  # use redis backend
        "CONFIG": {
-           "hosts": [os.environ.get('REDIS_URL', 'redis://localhost:6379')],  # set redis address
+           "hosts": [os.environ.get('REDIS_URL', 'redis://' + REDIS_HOSTNAME + ':6379')],  # set redis address
        },
        "ROUTING": "inskop.routing.channel_routing"  # load routing from our routing.py file
    }
 }
 
 # Celery settings
-BROKER_URL = 'redis://localhost:6379/0'  # our redis address
+BROKER_URL = 'redis://' + REDIS_HOSTNAME + ':6379/0'  # our redis address
 # use json format for everything
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout
+        }
+    },
+    'loggers': {
+        'inskop': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        }
+    }
+}

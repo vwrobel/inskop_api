@@ -71,8 +71,7 @@ macbook-pro-de-vw-1:lib vwrobel$ sudo ln -sf /Applications/Postgres.app/Contents
 macbook-pro-de-vw-1:lib vwrobel$ sudo ln -sf /Applications/Postgres.app/Contents/Versions/9.6/lib/libssl.1.0.0.dylib libssl.1.0.0.dylib
 
 
-# launch celery worker
-celery worker -A inskop.celery.app --loglevel=info
+
 
 
 brew install ffmpeg --with-fdk-aac --with-ffplay --with-freetype --with-libass --with-libquvi --with-libvorbis --with-libvpx --with-opus --with-x265
@@ -86,5 +85,47 @@ brew prune (Remove dead symlinks from Homebrew’s prefix)
 brew doctor (Check your Homebrew installation for common issues)
 
 
+# symbolic link to cvtools folder
+ln -s ~/Projets/inskop/code/cvtools ~/Projets/inskop/code/inskop_api/api/cvtools
+
+
 #install cvtools in virtualenv
 pip install -e pathtocvtools
+
+cd Projets/inskop/code/inskop_api/api/
+source ~/.virtualenvs/inskop/bin/activate
+
+# launch celery worker
+celery worker -A inskop.celery.app --loglevel=info
+
+# in a 2nd terminal launch redis
+bash run-redis.sh
+
+
+docker run --env-file api/.env inskop_api daphne -b 0.0.0.0 -p 8000 inskop.asgi:channel_layer
+docker run --env-file api/.env inskop_api python manage.py runworker
+docker run --env-file api/.env inskop_api celery worker -A inskop.celery.app --loglevel=info
+
+
+# from Filezilla move media to ssh
+then from instance
+
+mv /home/ec2-user/.ssh/media/* /mnt/efs/
+
+sudo docker logs --follow <ID>
+
+
+# IMPORTANT: mount Elastic File System
+sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 fs-f0768939.efs.eu-west-1.amazonaws.com:/  /mnt/efs/
+
+
+python manage.py shell
+
+from inskop.scene_manager.models import Scene
+scene = Scene.objects.get(pk=1)
+
+import cv2
+cap = cv2.VideoCapture('/usr/src/app/media/scenes/aouta/cam1/orig.mp4')
+_, frame = cap.read()
+frame
+>>>

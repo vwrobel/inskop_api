@@ -1,3 +1,3 @@
-FROM tutum/nginx
-RUN rm /etc/nginx/sites-enabled/default
-ADD sites-enabled/ /etc/nginx/sites-enabled
+FROM nginx
+#RUN apt-get clean && apt-get update && apt-get -y install vim
+COPY nginx.conf /etc/nginx/nginx.conf

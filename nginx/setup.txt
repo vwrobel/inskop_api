@@ -1,0 +1,1 @@
+sudo docker logs <NGINXcontainerID> from ec2 instance

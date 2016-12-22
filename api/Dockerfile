@@ -21,12 +21,9 @@ RUN cd conda-opencv3 && conda config --add channels menpo && conda build conda/
 RUN conda install /opt/conda/conda-bld/linux-64/opencv3-3.1.0-py35_0.tar.bz2
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
-ADD pip_install.txt /usr/src/app
+ADD requirements.txt /usr/src/app
 RUN pip install -r requirements.txt
 ADD . /usr/src/app
 EXPOSE 8000
 # To prevent error from lib1394 (cam driver)
 RUN echo 'ln /dev/null /dev/raw1394' >> ~/.bashrc
-CMD ["gunicorn", "inskop.wsgi:application", "-w 2", "-b :8000"]
-
-daphne -b 0.0.0.0 -p 8001 django_project.asgi:channel_layer

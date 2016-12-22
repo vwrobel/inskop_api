@@ -9,7 +9,7 @@ import yaml
 from channels import Channel
 from inskop.celery import app
 from inskop.scene_manager.models import Video, Selection, Window, WindowType
-from cvtools import CompFilter, SelectionWindow, CompTracker, process_vid
+from cvtools.cvtools import CompFilter, SelectionWindow, CompTracker, Processing
 from .models import Job
 
 log = logging.getLogger(__name__)
@@ -41,7 +41,8 @@ def process_vid_from_id(
         filter_names = [item['filter']['name'] for item in process_yaml['filters']]
         filter_params = [item['filter']['param'] for item in process_yaml['filters']]
         comp_process = CompFilter('filter', filter_names, filter_params)
-        process_vid(temp_path, filtered_path, comp_process)
+        filtering = Processing(temp_path, filtered_path, comp_process)
+        filtering.run()
         temp_path = filtered_path
 
     job.status = "progress"
@@ -78,7 +79,8 @@ def process_vid_from_id(
             type=sel['type']
         ) for sel in window_list]
         comp_process = CompTracker('tracker', tracker_names, tracker_params, selection_windows)
-        computed_selection_list = process_vid(temp_path, tracked_path, comp_process)
+        tracking = Processing(temp_path, tracked_path, comp_process)
+        computed_selection_list = tracking.run()
         temp_path = tracked_path
         for sindex, csl in enumerate(computed_selection_list):
             for cs in csl:
@@ -120,7 +122,6 @@ def process_vid_from_id(
             os.remove(tracked_path)
         except OSError:
             pass
-
 
     job.status = "completed"
     job.save()

@@ -11,6 +11,7 @@ from ..code_manager.models import Process, Code
 from ..scene_manager.models import Scene, SceneStatus, Camera, Video, Window, Tag, TagCategory, \
     TagTarget, Selection, FavoriteScene, WindowType, Analysis, SelectionType, FavoriteAnalysis
 
+
 class SceneNode(DjangoObjectType):
     class Meta:
         model = Scene

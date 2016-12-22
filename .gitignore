@@ -5,3 +5,4 @@
 !.elasticbeanstalk/*.global.yml
 .ebextensions
 deploy_to_eb.zip
+/api/cvtools/

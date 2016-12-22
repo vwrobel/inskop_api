@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import base64
 import json
 import os.path
+import logging
 
 import cv2
 from PIL import Image
@@ -14,6 +15,8 @@ from webcolors import hex_to_rgb
 from ..account_manager.models import Auth0User
 from ..code_manager.models import Process
 from ..storage import OverwriteStorage
+
+logger = logging.getLogger('inskop')
 
 
 class TagTarget(models.Model):
@@ -87,6 +90,7 @@ class Scene(models.Model):
     def orig_vid(self):
         camera = Camera.objects.get(scene=self, number=1)
         orig_vid = Video.objects.get(camera=camera, process__slug='orig')
+        logger.info('Orig vid file exists: ' + orig_vid.file.path + ' - ' + str(os.path.exists(orig_vid.file.path)))
         return orig_vid
 
     @property
